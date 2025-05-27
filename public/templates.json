@@ -1,0 +1,180 @@
+{
+  "templates": [
+    {
+      "id": "tumbler-20oz",
+      "name": "20 oz Tumbler Wrap",
+      "canvas": { "width": 3000, "height": 2400 },
+      "placeholders": [
+        {
+          "frame": "templates/tumbler-20oz/placeholder.png",
+          "x": 0,
+          "y": 0,
+          "width": 3000,
+          "height": 2400,
+          "fit": "cover"
+        }
+      ],
+      "coverFrame": "templates/tumbler-20oz/cover0.png"
+    },
+    {
+      "id": "tumbler-12oz",
+      "name": "12 oz Tumbler Wrap",
+      "canvas": { "width": 3000, "height": 2000 },
+      "placeholders": [
+        {
+          "frame": "templates/tumbler-12oz/placeholder.png",
+          "x": 605,
+          "y": 637,
+          "width": 1790,
+          "height": 1193,
+          "fit": "cover"
+        }
+      ],
+      "coverFrame": "templates/tumbler-12oz/cover0.png"
+    },
+    {
+      "id": "libbey-tumbler",
+      "name": "Libbey Tumbler",
+      "canvas": { "width": 3000, "height": 2000 },
+      "placeholders": [
+        {
+          "frame": "templates/libbey-tumbler/placeholder.png",
+          "x": 1200,
+          "y": 1000,
+          "width": 2400,
+          "height": 1600,
+          "fit": "cover"
+        }
+      ],
+      "coverFrame": "templates/libbey-tumbler/cover0.png"
+    },
+    {
+      "id": "tumbler-30oz",
+      "name": "30 oz Tumbler Wrap",
+      "canvas": { "width": 3200, "height": 2200 },
+      "placeholders": [
+        {
+          "frame": "templates/tumbler-30oz/placeholder.png",
+          "x": 800,
+          "y": 500,
+          "width": 2400,
+          "height": 1600,
+          "fit": "cover"
+        }
+      ],
+      "coverFrame": "templates/tumbler-30oz/cover0.png"
+    },
+    {
+      "id": "tumbler-40oz",
+      "name": "40 oz Tumbler Wrap",
+      "canvas": { "width": 3400, "height": 2400 },
+      "placeholders": [
+        {
+          "frame": "templates/tumbler-40oz/placeholder.png",
+          "x": 850,
+          "y": 400,
+          "width": 2400,
+          "height": 1600,
+          "fit": "cover"
+        }
+      ],
+      "coverFrame": "templates/tumbler-40oz/cover0.png"
+    },
+    {
+      "id": "cake-topper",
+      "name": "Cake Topper",
+      "canvas": { "width": 2000, "height": 1000 },
+      "placeholders": [
+        {
+          "frame": "templates/cake-topper/placeholder.png",
+          "x": 500,
+          "y": 250,
+          "width": 1000,
+          "height": 500,
+          "fit": "cover"
+        }
+      ],
+      "coverFrame": "templates/cake-topper/cover0.png"
+    },
+    {
+      "id": "cupcake-topper",
+      "name": "Cupcake Topper",
+      "canvas": { "width": 1000, "height": 500 },
+      "placeholders": [
+        {
+          "frame": "templates/cupcake-topper/placeholder.png",
+          "x": 250,
+          "y": 125,
+          "width": 500,
+          "height": 250,
+          "fit": "cover"
+        }
+      ],
+      "coverFrame": "templates/cupcake-topper/cover0.png"
+    },
+    {
+      "id": "car-coaster",
+      "name": "Car Coaster",
+      "canvas": { "width": 1500, "height": 1500 },
+      "placeholders": [
+        {
+          "frame": "templates/car-coaster/placeholder.png",
+          "x": 375,
+          "y": 375,
+          "width": 750,
+          "height": 750,
+          "fit": "cover"
+        }
+      ],
+      "coverFrame": "templates/car-coaster/cover0.png"
+    },
+    {
+      "id": "iphone-cover",
+      "name": "iPhone Cover",
+      "canvas": { "width": 1200, "height": 2400 },
+      "placeholders": [
+        {
+          "frame": "templates/iphone-cover/placeholder.png",
+          "x": 300,
+          "y": 600,
+          "width": 600,
+          "height": 1200,
+          "fit": "cover"
+        }
+      ],
+      "coverFrame": "templates/iphone-cover/cover0.png"
+    },
+    {
+      "id": "earrings",
+      "name": "Earrings",
+      "canvas": { "width": 800, "height": 800 },
+      "placeholders": [
+        {
+          "frame": "templates/earrings/placeholder.png",
+          "x": 200,
+          "y": 200,
+          "width": 400,
+          "height": 400,
+          "fit": "cover"
+        }
+      ],
+      "coverFrame": "templates/earrings/cover0.png"
+    },
+    {
+      "id": "doodle-letters",
+      "name": "Doodle Letters",
+      "canvas": { "width": 1600, "height": 800 },
+      "placeholders": [
+        {
+          "frame": "templates/doodle-letters/placeholder.png",
+          "x": 400,
+          "y": 200,
+          "width": 800,
+          "height": 400,
+          "fit": "cover"
+        }
+      ],
+      "coverFrame": "templates/doodle-letters/cover0.png"
+    }
+  ]
+}

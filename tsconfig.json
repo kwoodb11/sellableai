@@ -1,27 +1,62 @@
 {
   "compilerOptions": {
+    /* Target modern browsers but compile down to ES2017 for Node/legacy support */
     "target": "ES2017",
+
+    /* Include the standard DOM & ESNext libs */
     "lib": ["dom", "dom.iterable", "esnext"],
+
+    /* Allow JavaScript files alongside TS/TSX */
     "allowJs": true,
+
+    /* Skip type-checking of all declaration files (faster iteration) */
     "skipLibCheck": true,
+
+    /* Enable all strict type-checking options */
     "strict": true,
+
+    /* Don’t emit any output; Next.js handles compilation itself */
     "noEmit": true,
+
+    /* Support both CommonJS and ESModule interop */
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
+
+    /* Allow importing JSON files as modules */
     "resolveJsonModule": true,
+
+    /* Treat each file as an isolated module (required for Babel-style transforms) */
     "isolatedModules": true,
+
+    /* Keep JSX as-is in the output (Next.js will handle it) */
     "jsx": "preserve",
+
+    /* Speed up incremental builds */
     "incremental": true,
+
+    /* Next.js plugin for enhanced DX (e.g. auto-imports) */
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "paths": {
-      "@/*": ["./*"]
-    }
+
+    /* Path aliases */
+"paths": {
+  "@/*": ["*"]
+}
+
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+
+  /* Include these files in the compilation context */
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+
+  /* Exclude node_modules (and build output) */
   "exclude": ["node_modules"]
 }
