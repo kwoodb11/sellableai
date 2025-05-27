@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import JSZip from "jszip";
 import Sharp from "sharp";
-import { compositeImage } from "@/lib/image-processor";
+import { compositeImage } from "../../../src/lib/image-processor";
 
 export async function POST(request: Request) {
   try {
