@@ -8,7 +8,7 @@ export async function compositeImage(input: Buffer, tpl: any) {
   const artResized = await Sharp(input)
     .resize(ph.width, undefined, {
       fit: ph.fit ?? "cover",
-      position: "centre"
+      position: "centre",
     })
     .toBuffer();
 
@@ -19,12 +19,18 @@ export async function compositeImage(input: Buffer, tpl: any) {
     .extract({ left: 0, top: topCrop, width: ph.width, height: ph.height })
     .toBuffer();
 
-  // 🧠 Helper to load image buffers from public
-  async function loadPublicImage(filePath: string): Promise<Buffer> {
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
+  // 🧠 Load public asset over the network
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? "https://sellableai-dpbgwtmlr-sellable-ai.vercel.app"
       : "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/${filePath}`);
+
+  async function loadPublicImage(filePath: string): Promise<Buffer> {
+    const url = `${baseUrl}/${filePath}`;
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch ${filePath}: ${res.statusText}`);
+    }
     return Buffer.from(await res.arrayBuffer());
   }
 
@@ -38,7 +44,7 @@ export async function compositeImage(input: Buffer, tpl: any) {
       input: await loadPublicImage(ph.frame),
       left: ph.x,
       top: ph.y,
-    }
+    },
   ];
 
   if (tpl.coverFrame) {
@@ -46,7 +52,7 @@ export async function compositeImage(input: Buffer, tpl: any) {
       input: await loadPublicImage(tpl.coverFrame),
       left: 0,
       top: 0,
-      blend: "over"
+      blend: "over",
     });
   }
 
@@ -55,8 +61,8 @@ export async function compositeImage(input: Buffer, tpl: any) {
       width: tpl.canvas.width,
       height: tpl.canvas.height,
       channels: 4,
-      background: { r: 0, g: 0, b: 0, alpha: 0 }
-    }
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    },
   }).composite(comps);
 
   const mockupPng = await img.png().toBuffer();
@@ -66,8 +72,8 @@ export async function compositeImage(input: Buffer, tpl: any) {
       width: tpl.canvas.width,
       height: tpl.canvas.height,
       channels: 4,
-      background: { r: 0, g: 0, b: 0, alpha: 0 }
-    }
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    },
   })
     .composite(comps.slice(0, 2))
     .png()
