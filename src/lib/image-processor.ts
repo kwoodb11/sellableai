@@ -4,7 +4,6 @@ import Sharp from "sharp";
 export async function compositeImage(input: Buffer, tpl: any) {
   const ph = tpl.placeholders[0];
 
-  // Resize & center-crop
   const artResized = await Sharp(input)
     .resize(ph.width, undefined, {
       fit: ph.fit ?? "cover",
@@ -19,11 +18,10 @@ export async function compositeImage(input: Buffer, tpl: any) {
     .extract({ left: 0, top: topCrop, width: ph.width, height: ph.height })
     .toBuffer();
 
-  // Dynamically choose correct base URL
   const baseUrl =
     process.env.NODE_ENV === "production"
-    ? "https://sellableai-dpbgwtmlr-sellable-ai.vercel.app"
-          : "http://localhost:3000";
+      ? "https://sellableai-git-main-sellable-ai.vercel.app"
+      : "http://localhost:3000";
 
   async function loadPublicImage(filePath: string): Promise<Buffer> {
     const url = `${baseUrl}/${filePath}`;
