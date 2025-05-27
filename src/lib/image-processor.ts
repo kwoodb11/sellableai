@@ -19,18 +19,17 @@ export async function compositeImage(input: Buffer, tpl: any) {
     .extract({ left: 0, top: topCrop, width: ph.width, height: ph.height })
     .toBuffer();
 
-  // 🧠 Load public asset over the network
-const baseUrl =
-  process.env.NODE_ENV === "production"
+  // Dynamically choose correct base URL
+  const baseUrl =
+    process.env.NODE_ENV === "production"
     ? "https://sellableai-dpbgwtmlr-sellable-ai.vercel.app"
-    : "http://localhost:3000";
-
+          : "http://localhost:3000";
 
   async function loadPublicImage(filePath: string): Promise<Buffer> {
     const url = `${baseUrl}/${filePath}`;
     const res = await fetch(url);
     if (!res.ok) {
-      throw new Error(`Failed to fetch ${filePath}: ${res.statusText}`);
+      throw new Error(`❌ Failed to fetch ${filePath}: ${res.statusText}`);
     }
     return Buffer.from(await res.arrayBuffer());
   }
