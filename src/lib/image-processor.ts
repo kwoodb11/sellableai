@@ -20,10 +20,11 @@ export async function compositeImage(input: Buffer, tpl: any) {
     .toBuffer();
 
   // 🧠 Load public asset over the network
-  const baseUrl =
-    process.env.NODE_ENV === "production"
-      ? "https://sellableai-dpbgwtmlr-sellable-ai.vercel.app"
-      : "http://localhost:3000";
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://sellableai-dpbgwtmlr-sellable-ai.vercel.app"
+    : "http://localhost:3000";
+
 
   async function loadPublicImage(filePath: string): Promise<Buffer> {
     const url = `${baseUrl}/${filePath}`;
