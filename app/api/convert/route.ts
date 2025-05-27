@@ -4,36 +4,33 @@ import JSZip from "jszip";
 import Sharp from "sharp";
 import { compositeImage } from "@/lib/image-processor";
 
+export const runtime = "nodejs"; // ✅ Ensure it runs on Vercel Node.js serverless runtime
+
 export async function POST(request: Request) {
   try {
     const form = await request.formData();
-    const tpl = JSON.parse(form.get("template") as string);
+    const templateData = form.get("template") as string;
     const files = form.getAll("files") as File[];
 
-    if (!tpl || files.length === 0) {
-      return new NextResponse(
-        "You must select a template and upload at least one file.",
-        { status: 400 }
-      );
+    if (!templateData || files.length === 0) {
+      return new NextResponse("Missing template or files.", { status: 400 });
     }
 
+    const tpl = JSON.parse(templateData);
     const zip = new JSZip();
 
-    // ✅ PARALLEL IMAGE PROCESSING
     await Promise.all(
       files.map(async (file) => {
         const rawArray = await file.arrayBuffer();
         const imgBuf = Buffer.from(rawArray);
 
-        // Upscale to 300 DPI
+        // Convert to 300 DPI
         const dpiBuf = await Sharp(imgBuf)
           .withMetadata({ density: 300 })
           .toBuffer();
 
-        // Composite mockup
         const { placeholderPng, mockupPng } = await compositeImage(dpiBuf, tpl);
 
-        // Create folder using base name
         const baseName = file.name.replace(/\.[^/.]+$/, "");
         const folder = zip.folder(baseName)!;
 
@@ -45,10 +42,9 @@ export async function POST(request: Request) {
       })
     );
 
-    // Generate zip and return
-    const content = await zip.generateAsync({ type: "nodebuffer" });
+    const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
 
-    return new NextResponse(content, {
+    return new NextResponse(zipBuffer, {
       status: 200,
       headers: {
         "Content-Type": "application/zip",
@@ -56,7 +52,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (err: any) {
-    console.error("Conversion error:", err);
+    console.error("Convert error:", err);
     return new NextResponse(`Error: ${err.message}`, { status: 500 });
   }
 }
