@@ -1,46 +1,26 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { compositeImageFromUrl } from "@/lib/image-processor";
+import { getTemplates } from "@/lib/templates";
 import JSZip from "jszip";
-import Sharp from "sharp";
-import { compositeImage } from "@/lib/image-processor";
 
-export const runtime = "nodejs"; // ✅ Ensure it runs on Vercel Node.js serverless runtime
+export async function POST(req: NextRequest) {
+  const { imageUrl, templateId } = await req.json();
 
-export async function POST(request: Request) {
+  if (!imageUrl || !templateId) {
+    return NextResponse.json({ error: "Missing imageUrl or templateId" }, { status: 400 });
+  }
+
+  const templates = getTemplates();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tpl = templates.find((t: { id: any; }) => t.id === templateId);
+  if (!tpl) return NextResponse.json({ error: "Template not found" }, { status: 404 });
+
   try {
-    const form = await request.formData();
-    const templateData = form.get("template") as string;
-    const files = form.getAll("files") as File[];
+    const { mockupPng, placeholderPng } = await compositeImageFromUrl(imageUrl, tpl);
 
-    if (!templateData || files.length === 0) {
-      return new NextResponse("Missing template or files.", { status: 400 });
-    }
-
-    const tpl = JSON.parse(templateData);
     const zip = new JSZip();
-
-    await Promise.all(
-      files.map(async (file) => {
-        const rawArray = await file.arrayBuffer();
-        const imgBuf = Buffer.from(rawArray);
-
-        // Convert to 300 DPI
-        const dpiBuf = await Sharp(imgBuf)
-          .withMetadata({ density: 300 })
-          .toBuffer();
-
-        const { placeholderPng, mockupPng } = await compositeImage(dpiBuf, tpl);
-
-        const baseName = file.name.replace(/\.[^/.]+$/, "");
-        const folder = zip.folder(baseName)!;
-
-        folder.file("placeholder.png", placeholderPng);
-        folder.file(
-          "cover.jpg",
-          await Sharp(mockupPng).jpeg({ quality: 90 }).toBuffer()
-        );
-      })
-    );
+    zip.file("mockup.png", mockupPng);
+    zip.file("placeholder.png", placeholderPng);
 
     const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
 
@@ -48,11 +28,11 @@ export async function POST(request: Request) {
       status: 200,
       headers: {
         "Content-Type": "application/zip",
-        "Content-Disposition": `attachment; filename="mockups-${Date.now()}.zip"`,
-      },
+        "Content-Disposition": 'attachment; filename="mockups.zip"'
+      }
     });
-  } catch (err: any) {
-    console.error("Convert error:", err);
-    return new NextResponse(`Error: ${err.message}`, { status: 500 });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (err) {
+    return NextResponse.json({ error: "Image generation failed" }, { status: 500 });
   }
 }

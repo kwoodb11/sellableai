@@ -16,13 +16,13 @@
       ],
       "coverFrame": "templates/tumbler-20oz/cover0.png"
     },
-    {
+      {
       "id": "tumbler-12oz",
       "name": "12 oz Tumbler Wrap",
       "canvas": { "width": 3000, "height": 2000 },
       "placeholders": [
         {
-          "frame": "templates/tumbler-12oz/placeholder.png",
+          "frame": "https://my-mockup-assets.s3.us-east-1.amazonaws.com/tumbler-12oz/placeholder.png",
           "x": 605,
           "y": 637,
           "width": 1790,
@@ -30,7 +30,7 @@
           "fit": "cover"
         }
       ],
-      "coverFrame": "templates/tumbler-12oz/cover0.png"
+"coverFrame": "https://my-mockup-assets.s3.us-east-1.amazonaws.com/tumbler-12oz/cover0.png"
     },
     {
       "id": "libbey-tumbler",
