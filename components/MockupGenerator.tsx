@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Button } from "./ui/button";
 import TemplateSelector from "./TemplateSelector";
@@ -37,74 +39,74 @@ const MockupGenerator = () => {
     setTimeout(() => setMessage(""), 5000);
   };
 
-const handleGenerate = async () => {
-  if (!selectedTemplate) {
-    showMessage("Please select a template first.", "error");
-    return;
-  }
-  if (files.length === 0) {
-    showMessage("Please upload at least one design file.", "error");
-    return;
-  }
-
-  setProgress(0);
-  setIsProcessing(true);
-  setMessage("");
-
-  let interval: NodeJS.Timeout | null = null;
-  if (files.length > 0) {
-    interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 95) return prev;
-        return prev + Math.ceil(100 / files.length / 2);
-      });
-    }, 300);
-  }
-
-  try {
-    const formData = new FormData();
-    formData.append("template", JSON.stringify(selectedTemplate));
-    files.forEach((file) => formData.append("files", file));
-
-    console.log("🔁 Sending mockup generation request...");
-    console.log("📦 Template:", selectedTemplate);
-    console.log("📂 Files:", files.map(f => f.name));
-
-    const response = await fetch("/api/convert", {
-      method: "POST",
-      body: formData,
-    });
-
-    console.log("📬 Response received:", response.status);
-
-    if (!response.ok) {
-      throw new Error(`Server error: ${response.status}`);
+  const handleGenerate = async () => {
+    if (!selectedTemplate) {
+      showMessage("Please select a template first.", "error");
+      return;
+    }
+    if (files.length === 0) {
+      showMessage("Please upload at least one design file.", "error");
+      return;
     }
 
-    const blob = await response.blob();
-    console.log("📦 Blob size:", blob.size);
+    setProgress(0);
+    setIsProcessing(true);
+    setMessage("");
 
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `mockups-${selectedTemplate.name}-${Date.now()}.zip`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
+    let interval: NodeJS.Timeout | null = null;
+    if (files.length > 0) {
+      interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 95) return prev;
+          return prev + Math.ceil(100 / files.length / 2);
+        });
+      }, 300);
+    }
 
-    showMessage(`Successfully generated ${files.length} mockups! Download started.`, "success");
-    setProgress(100);
-    setDone(true);
-  } catch (error) {
-    console.error("❌ Generation failed:", error);
-    showMessage("Failed to generate mockups. Please try again.", "error");
-  } finally {
-    if (interval) clearInterval(interval);
-    setIsProcessing(false);
-  }
-};
+    try {
+      const formData = new FormData();
+      formData.append("template", JSON.stringify(selectedTemplate));
+      files.forEach((file) => formData.append("files", file));
 
+      console.log("🔁 Sending mockup generation request...");
+      console.log("📦 Template:", selectedTemplate);
+      console.log("📂 Files:", files.map(f => f.name));
+
+      const apiBase = process.env.NEXT_PUBLIC_BASE_URL || "";
+      const response = await fetch(`${apiBase}/api/convert`, {
+        method: "POST",
+        body: formData,
+      });
+
+      console.log("📬 Response received:", response.status);
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      console.log("📦 Blob size:", blob.size);
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `mockups-${selectedTemplate.name}-${Date.now()}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      showMessage(`Successfully generated ${files.length} mockups! Download started.`, "success");
+      setProgress(100);
+      setDone(true);
+    } catch (error) {
+      console.error("❌ Generation failed:", error);
+      showMessage("Failed to generate mockups. Please try again.", "error");
+    } finally {
+      if (interval) clearInterval(interval);
+      setIsProcessing(false);
+    }
+  };
 
   const handleNewProject = () => {
     setSelectedTemplate(null);
@@ -152,7 +154,6 @@ const handleGenerate = async () => {
         </div>
       )}
 
-      {/* Progress Bar */}
       {isProcessing && (
         <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4 overflow-hidden">
           <div
