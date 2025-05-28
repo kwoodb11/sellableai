@@ -25,11 +25,19 @@ export async function compositeImage(input: Buffer, tpl: any) {
 
   async function loadPublicImage(filePath: string): Promise<Buffer> {
     const url = `${baseUrl}/${filePath}`;
+    console.log("🔍 Fetching:", url); // LOG WHICH FILE
+
     const res = await fetch(url);
     if (!res.ok) {
-      throw new Error(`❌ Failed to fetch ${filePath}: ${res.statusText}`);
+      console.error(`❌ Failed to fetch ${filePath}:`, res.status, res.statusText);
+      throw new Error(`Failed to fetch ${filePath}: ${res.statusText}`);
     }
-    return Buffer.from(await res.arrayBuffer());
+
+    const arrayBuffer = await res.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    console.log(`✅ Fetched ${filePath}, size: ${buffer.length} bytes`);
+    return buffer;
   }
 
   const comps: Sharp.OverlayOptions[] = [
@@ -46,12 +54,16 @@ export async function compositeImage(input: Buffer, tpl: any) {
   ];
 
   if (tpl.coverFrame) {
-    comps.push({
-      input: await loadPublicImage(tpl.coverFrame),
-      left: 0,
-      top: 0,
-      blend: "over",
-    });
+    try {
+      comps.push({
+        input: await loadPublicImage(tpl.coverFrame),
+        left: 0,
+        top: 0,
+        blend: "over",
+      });
+    } catch (err) {
+      console.error("⚠️ Could not load cover frame:", tpl.coverFrame, err);
+    }
   }
 
   const img = Sharp({
