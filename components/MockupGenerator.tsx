@@ -29,6 +29,7 @@ const MockupGenerator = () => {
   const [message, setMessage] = useState<string>("");
   const [messageType, setMessageType] = useState<"success" | "error" | "info">("info");
   const [done, setDone] = useState(false);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
   const showMessage = (
     text: string,
@@ -69,35 +70,21 @@ const MockupGenerator = () => {
       files.forEach((file) => formData.append("files", file));
 
       console.log("🔁 Sending mockup generation request...");
-      console.log("📦 Template:", selectedTemplate);
-      console.log("📂 Files:", files.map(f => f.name));
-
-      const apiBase = process.env.NEXT_PUBLIC_BASE_URL || "";
-      const response = await fetch(`${apiBase}/api/convert`, {
+      const response = await fetch("/api/convert", {
         method: "POST",
         body: formData,
       });
-
-      console.log("📬 Response received:", response.status);
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
       }
 
-      const blob = await response.blob();
-      console.log("📦 Blob size:", blob.size);
+      const data = await response.json();
+      const { url } = data;
 
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `mockups-${selectedTemplate.name}-${Date.now()}.zip`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      showMessage(`Successfully generated ${files.length} mockups! Download started.`, "success");
+      showMessage(`Successfully generated ${files.length} mockups!`, "success");
       setProgress(100);
+      setDownloadUrl(url);
       setDone(true);
     } catch (error) {
       console.error("❌ Generation failed:", error);
@@ -113,6 +100,7 @@ const MockupGenerator = () => {
     setFiles([]);
     setMessage("");
     setProgress(0);
+    setDownloadUrl(null);
     setDone(false);
   };
 
@@ -122,7 +110,17 @@ const MockupGenerator = () => {
     return (
       <div className="bg-white rounded-lg shadow-md p-8 text-center space-y-4">
         <h2 className="text-2xl font-bold text-brand-text">All Done!</h2>
-        <p className="text-gray-600">Your mockups are downloading now.</p>
+        <p className="text-gray-600">Your mockups are ready.</p>
+        {downloadUrl && (
+          <a
+            href={downloadUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold"
+          >
+            Download Mockups
+          </a>
+        )}
         <Button onClick={handleNewProject} className="w-full h-12">
           New Project
         </Button>
